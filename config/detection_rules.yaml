@@ -1,0 +1,172 @@
+# Unified Privilege Escalation Detection Rules
+# MITRE ATT&CK Framework Configuration
+
+detection:
+  enabled: true
+  alert_severity: HIGH
+  log_level: INFO
+  check_interval: 1  # seconds
+
+techniques:
+  # T1548 - Abuse Elevation Control Mechanism
+  T1548:
+    enabled: true
+    name: "Abuse Elevation Control Mechanism"
+    indicators:
+      - sudo_execution
+      - sudo_nopasswd
+      - pkexec_usage
+      - polkit_bypass
+      - uac_bypass
+    threshold: 3
+    
+  # T1134 - Access Token Manipulation
+  T1134:
+    enabled: true
+    name: "Access Token Manipulation"
+    indicators:
+      - token_stealing
+      - impersonation_attempts
+      - create_process_with_token
+      - duplicate_token
+    threshold: 2
+    
+  # T1547 - Boot or Logon Autostart Execution
+  T1547:
+    enabled: true
+    name: "Boot or Logon Autostart Execution"
+    indicators:
+      - rc_local_modification
+      - systemd_service_creation
+      - cron_job_creation
+      - init_d_modification
+      - bashrc_modification
+    threshold: 2
+    
+  # T1543 - Create or Modify System Process
+  T1543:
+    enabled: true
+    name: "Create or Modify System Process"
+    indicators:
+      - service_creation
+      - daemon_modification
+      - systemd_service_creation
+      - init_modification
+    threshold: 2
+    
+  # T1556 - Modify Authentication Process
+  T1556:
+    enabled: true
+    name: "Modify Authentication Process"
+    indicators:
+      - pam_modification
+      - nss_modification
+      - ssh_key_injection
+      - sudoers_modification
+    threshold: 2
+    
+  # T1068 - Exploitation for Privilege Escalation
+  T1068:
+    enabled: true
+    name: "Exploitation for Privilege Escalation"
+    indicators:
+      - kernel_exploit
+      - vulnerability_exploit
+      - abnormal_system_calls
+      - segmentation_fault_patterns
+    threshold: 1
+    
+  # T1574 - Hijack Execution Flow
+  T1574:
+    enabled: true
+    name: "Hijack Execution Flow"
+    indicators:
+      - ld_preload_modification
+      - library_path_hijacking
+      - rpath_manipulation
+      - environment_variable_abuse
+    threshold: 2
+    
+  # T1070 - Impersonate User/Process
+  T1070:
+    enabled: true
+    name: "Impersonate User/Process"
+    indicators:
+      - su_execution
+      - impersonate_syscall
+      - privilege_change
+      - user_switching
+    threshold: 3
+    
+  # T1547.014 - Authentication API Hooking
+  T1547_014:
+    enabled: true
+    name: "Modify Authentication Process (API Hooking)"
+    indicators:
+      - library_injection
+      - hook_installation
+      - api_redirection
+    threshold: 1
+    
+  # T1574.008 - Library Search Order Hijacking
+  T1574_008:
+    enabled: true
+    name: "Hijack Execution Flow (Library Search Order)"
+    indicators:
+      - rogue_library_creation
+      - library_path_manipulation
+      - current_directory_hijacking
+    threshold: 2
+    
+  # T1053 - Scheduled Task/Job
+  T1053:
+    enabled: true
+    name: "Scheduled Task/Job"
+    indicators:
+      - crontab_modification
+      - at_command_usage
+      - systemd_timer_creation
+      - anacron_modification
+    threshold: 2
+    
+  # T1543.003 - Windows Service Creation
+  T1543_003:
+    enabled: true
+    name: "Create or Modify System Process (Service)"
+    indicators:
+      - sc_exe_usage
+      - registry_service_modification
+      - driver_installation
+    threshold: 2
+    
+  # T1548.003 - Sudo and Sudo Caching
+  T1548_003:
+    enabled: true
+    name: "Sudo and Sudo Caching"
+    indicators:
+      - sudo_cache_exploitation
+      - timestamp_modification
+      - sudo_l_usage
+      - password_cache_access
+    threshold: 2
+
+monitoring:
+  system_calls: true
+  process_monitoring: true
+  file_monitoring: true
+  network_monitoring: true
+  auth_monitoring: true
+  kernel_events: true
+
+alerts:
+  email_enabled: false
+  syslog_enabled: true
+  file_logging: true
+  console_output: true
+  alert_threshold: HIGH
+
+performance:
+  max_processes_monitored: 1000
+  cache_size: 500
+  batch_processing: true
+  batch_size: 100
